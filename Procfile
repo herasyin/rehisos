@@ -1,1 +1,1 @@
-worker: python rolebot.py
+worker: python rehisos.py

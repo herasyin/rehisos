@@ -1,0 +1,6 @@
+# Python cashe
+# Local run files
+__pycache__/
+*py[cod]
+home.py
+rehdata.db

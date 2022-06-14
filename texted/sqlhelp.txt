@@ -1,0 +1,27 @@
+<:tv1:742677301581447258> **SQL MANUAL**
+**CREATE** ~~IF NOT EXIST~~ **TABLE** ||table_name|| (||column_name|| ||column_datatype||, ...)
+**DROP** ~~IF EXIST~~ **TABLE** ||table_name||
+
+**SELECT** ||column_name||, ... **FROM** ||table_name||  **WHERE** ||column_name|| = ||value|| **ORDER BY** ||column_name||
+**INSERT INTO** ||table_name|| (||column_name||, ...) **VALUES** (||value||, ...)
+**UPDATE** ||table_name|| **SET** ||column_name|| = ||new_value|| **WHERE** ||column_name|| = ||value||
+
+**ALTER** ||table_name|| **RENAME** ~~COLUMN~~ ||column_name|| **TO** ||new_column_name||
+**ALTER** ||table_name|| **ADD** ~~COLUMN~~ ||column_name||
+**ALTER** ||table_name|| **DROP** ~~COLUMN~~ ||column_name||
+```fix
+🝄 DATATYPE   🝄 TYPES ALLOWED IN THAT COLUMN
+🝙 INTEGER    🝙 INTEGER, REAL, TEXT, BLOB
+🝙 REAL       🝙 REAL, TEXT, BLOB
+🝙 TEXT       🝙 TEXT, BLOB
+🝙 BLOB       🝙 INTEGER, REAL, TEXT, BLOB
+▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁
+INTEGER: /INT /INTEGER /TINYINT /SMALLINT /MEDIUMINT /BIGINT /UNSIGNED BIG INT /INT2 /INT8
+TEXT: /CHARACTER(20) /VARCHAR(255) /VARYING CHARACTER(255) /NCHAR(55) /NATIVE CHARACTER(70) /NVARCHAR(100) /TEXT /CLOB
+BLOB: /BLOB /no datatype specified
+REAL: /REAL /DOUBLE /DOUBLE PRECISION /FLOAT
+NUMERIC: /NUMERIC /DECIMAL(10,5) /BOOLEAN /DATE /DATETIME
+```
+DOCUMENTATION: ||https://www.postgresql.org/docs/current/index.html||
+ДОКУМЕНТАЦИЯ: ||https://postgrespro.ru/docs/postgresql/14/index||
+HEROKU MANGING DB: ||https://devcenter.heroku.com/articles/managing-heroku-postgres-using-cli||

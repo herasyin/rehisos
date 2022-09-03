@@ -137,7 +137,7 @@ def decoder(pack_, key) -> str:
 		pack = pack.translate(str.maketrans(sklep, CRYPT))
 		pack = ''.join(chr(ord(pack[x])+ord(key[-2])-ord(key[-1])) for x in range(len(pack)))
 	else:
-		pack = f'{ICON[3]} нахуйпошёл'
+		pack = '<:fuckyou:742675532600049704> нахуйпошёл'
 	return pack
 
 def crypter(random, pack, key) -> str:

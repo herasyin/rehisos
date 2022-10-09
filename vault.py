@@ -2,6 +2,7 @@
 # сopyleft: ⌨ 2022 >>-her--> all rights not reserved
 
 import os
+import random
 
 HERA_ID = 726267858283266160
 JACK_ID = 424926267532640257
@@ -125,33 +126,23 @@ def formater(records, icon='', description=None) -> str:
 	return package
 
 
-def decoder(pack_, key) -> str:
-	ring = int(''.join(x for x in key if x.isnumeric()))
-	if down(key, ring)//10-ring:
-		sklep, pack, cack_ = '', '', -1
-		for i, x in enumerate(key[:len(pack_)-69]):
-			sklep = sklep + pack_[~CRYPT.find(x)-len(pack):cack_]
-			pack = pack + pack_[cack_]
-			cack_ = ~CRYPT.find(x)-len(pack)
-		sklep += pack_[:cack_+1]
-		pack = pack.translate(str.maketrans(sklep, CRYPT))
-		pack = ''.join(chr(ord(pack[x])+ord(key[-2])-ord(key[-1])) for x in range(len(pack)))
-	else:
-		pack = '<:fuckyou:742675532600049704> нахуйпошёл'
+def decoder(pack_, name) -> str:
+	potion = down(ord('🝄')+ord('✝'))//ord(name[-1])
+	sklep, pack = pack_[:len(CRYPT)], pack_[len(CRYPT):]
+	sklep += pack_[:cack_+1]
+	pack = pack.translate(str.maketrans(sklep, CRYPT))
+	pack = ''.join(chr(ord(pack[x])+ord(potion)-ord(name[1])) for x inrange(len(pack)))
 	return pack
 
-def crypter(random, pack, key) -> str:
+def crypter(pack, name) -> str:
+	potion = down(ord('🝄')+ord('✝'))//ord(name[-1])
 	sklep = [x for x in CRYPT]; random.shuffle(sklep); sklep = ''.join(sklep);
-	pack = ''.join(chr(ord(pack[x])-ord(key[-2])+ord(key[-1])) for x in range(len(pack)))
+	pack = ''.join(chr(ord(pack[x])-ord(potion)+ord(name[1])) for x in range(len(pack)))
 	pack = pack.translate(str.maketrans(CRYPT, sklep))
-	pack_, cack_ = '', 0
-	for i, x in enumerate(pack):
-		pack_ = sklep[cack_:CRYPT.find(key[i])] + x + pack_
-		cack_ = CRYPT.find(key[i])
-	pack_ = sklep[cack_:] + pack_
+	pack_ = sklep + pack
 	return pack_
 
-def down(key, ring) -> int:
+def down(ring) -> int:
 	pyramid = [[x+i for x in range(i)] for i in range(1, ring)]
 	def tentaculum(level, index):
 		while level < len(pyramid)-1:
@@ -162,9 +153,14 @@ def down(key, ring) -> int:
 		return pyramid[level][index]
 	return tentaculum(0, 0)
 
-def generator(random, length=8):
-	password = ''.join([random.choice(CRYPT) for x in range(int(length))])
-	return password
+def generator(lenght=8) -> str:
+    builder = lambda lenght: ''.join([random.choice(CRYPT) for x in range(int(lenght))])
+    password = builder(lenght)
+    while not any(x.isnumeric() for x in password) or \
+          not any(x.islower () for x in password) or \
+          not any(x.isupper() for x in password):
+        password = builder(lenght)
+    return password
 
 
 #░░       ░░░░░░   ░░░░░░   ░░░░░░  ░░░░░░░ ░░░░░░

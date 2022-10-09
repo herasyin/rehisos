@@ -61,7 +61,7 @@ async def on_member_join(member):
 	channel = client.get_channel(CHAT_ID) if member.guild.id == HERA_ID else member.guild.system_channel
 	await channel.send(f'{member.mention} {random.choice(HI)}')
 
-	# DATABASE // WELLCOME TO BIG BROTHER NOTE 🖉
+	# BIG BROTHER NOTE 🖉
 	try:
 		with psycopg2.connect(DATABASE_URL, sslmode='require') as database:
 			cursor = database.cursor()
@@ -393,7 +393,7 @@ async def password(ctx, action=None, *package):
 				case 'SEE':
 					cursor.execute("SELECT signature FROM repository WHERE place = '{}';".format(package[0]))
 					sign = cursor.fetchone()
-					decoded = decoder(sign[0], package[1])
+					decoded = decoder(sign[0], ctx.guild.name)
 					await ctx.channel.send('`🔏 password:`  ||{}||'.format(decoded))
 					message = ctx.channel.last_message
 					if decoded not in message.content:
@@ -402,11 +402,11 @@ async def password(ctx, action=None, *package):
 						await message.delete(delay=3.0)
 				case 'ADD':
 					cursor.execute("INSERT INTO repository (place, signature) \
-									VALUES ('{}', '{}');".format(package[0], crypter(random, package[1], package[2])))
+									VALUES ('{}', '{}');".format(package[0], crypter(package[1], ctx.guild.name)))
 					await ctx.channel.send('<:tea:847101198308999208> ok')
 				case 'UPD':
 					cursor.execute("UPDATE repository SET signature = '{}' \
-									WHERE place = '{}';".format(crypter(random, package[1], package[2]), package[0]))
+									WHERE place = '{}';".format(crypter(package[1], ctx.guild.name), package[0]))
 					await ctx.channel.send('<:worker:791586102825582602> ok')
 				case 'GEN':
 					generated = generator(random, package[0]) if package else generator(random)

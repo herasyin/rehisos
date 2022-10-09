@@ -409,7 +409,7 @@ async def password(ctx, action=None, *package):
 									WHERE place = '{}';".format(crypter(package[1], ctx.guild.name), package[0]))
 					await ctx.channel.send('<:worker:791586102825582602> ok')
 				case 'GEN':
-					generated = generator(random, package[0]) if package else generator(random)
+					generated = generator(package[0]) if package else generator(random)
 					await ctx.channel.send('`🔏 generated:` ||{}||'.format(generated))
 				case None:
 					cursor.execute('SELECT place, signature FROM repository;')

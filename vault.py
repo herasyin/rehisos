@@ -131,7 +131,7 @@ def decoder(pack_, name) -> str:
 	sklep, pack = pack_[:len(CRYPT)], pack_[len(CRYPT):]
 	sklep += pack_[:cack_+1]
 	pack = pack.translate(str.maketrans(sklep, CRYPT))
-	pack = ''.join(chr(ord(pack[x])+ord(potion)-ord(name[1])) for x inrange(len(pack)))
+	pack = ''.join(chr(ord(pack[x])+ord(potion)-ord(name[1])) for x in range(len(pack)))
 	return pack
 
 def crypter(pack, name) -> str:

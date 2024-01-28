@@ -11,7 +11,7 @@ import sys, os, json
 from vault import *
 
 # DATABASE_URL = os.environ['DATABASE_URL']
-TOKEN = os.environ['DISCORD_TOKEN']
+TOKEN = os.environ[DISCORD_TOKEN]
 
 #from home import *  # HOME RUN
 

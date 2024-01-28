@@ -8,13 +8,12 @@ import time
 import random
 import requests
 import sys, os, json
-import psycopg2
 from vault import *
 
-DATABASE_URL = os.environ['DATABASE_URL']
-TOKEN = os.environ['DISCORD_TOKEN']
+# DATABASE_URL = os.environ['DATABASE_URL']
+# TOKEN = os.environ['DISCORD_TOKEN']
 
-# from home import *  # HOME RUN
+from home import *  # HOME RUN
 
 
 intents = discord.Intents.all()
@@ -27,20 +26,6 @@ print(sys.version)
 
 @client.event
 async def on_ready():
-	try:
-		with psycopg2.connect(DATABASE_URL, sslmode='require') as database:
-			cursor = database.cursor()
-			for guild in client.guilds:
-				for member in guild.members:
-					cursor.execute('SELECT register FROM members WHERE discord_id = {};'.format(member.id))
-					if cursor.fetchone() is None:
-						try:
-							cursor.execute("INSERT INTO members (name, discord_id, mention, score) VALUES ('{}', {}, '{}', 0);".format(member.name, member.id, member))
-							await logit('MEMBER', client, member=member)
-						except psycopg2.errors.UniqueViolation as e:
-							await logit('ERROR_', client, member=member, e=e)
-	except Exception as e:
-		await logit('ERROR_', client, e=e)
 	print('ready 2 say hui!!111')
 
 
@@ -60,19 +45,6 @@ async def on_member_join(member):
 		  'мне кажется, мы подружимся.']
 	channel = client.get_channel(CHAT_ID) if member.guild.id == HERA_ID else member.guild.system_channel
 	await channel.send(f'{member.mention} {random.choice(HI)}')
-
-	# BIG BROTHER NOTE 🖉
-	try:
-		with psycopg2.connect(DATABASE_URL, sslmode='require') as database:
-			cursor = database.cursor()
-			cursor.execute('SELECT register FROM members WHERE discord_id = {};'.format(member.id))
-			if cursor.fetchone() is None:
-				cursor.execute("INSERT INTO members (name, discord_id, mention, score) VALUES ('{}', {}, '{}', 0);".format(member.name, member.id, member))
-				await logit('MEMBER', client, member=member)
-			else:
-				await logit('MEMBER', client, member=member, cursor=cursor)
-	except Exception as e:
-		await logit('ERROR_', client, member=member, e=e)
 
 
 @client.event
@@ -130,14 +102,6 @@ async def on_message(message):
 				await type_message.edit(content=frame)
 			await type_message.delete(delay=1.0)
 			break
-
-	# DATABASE // EVERY COIN HELPS ⛃⛂
-	try:
-		with psycopg2.connect(DATABASE_URL, sslmode='require') as database:
-			cursor = database.cursor()
-			cursor.execute('UPDATE members SET score = score + 1 WHERE discord_id = {};'.format(message.author.id))
-	except Exception as e:
-		await logit('ERROR_', client, author=message.author.name, e=e)
 
 
 
@@ -333,91 +297,6 @@ async def stock(ctx, company, per='W'):
 		await logit('ERROR_', client, e=e)
 		raise e.with_traceback(traceback)
 
-
-
-#░░░░░░   ░░░░░  ░░░░░░░░  ░░░░░
-#▒▒   ▒▒ ▒▒   ▒▒    ▒▒    ▒▒   ▒▒
-#▒▒   ▒▒ ▒▒▒▒▒▒▒    ▒▒    ▒▒▒▒▒▒▒
-#▓▓   ▓▓ ▓▓   ▓▓    ▓▓    ▓▓   ▓▓
-#██████  ██   ██    ██    ██   ██
-
-
-@client.command(hidden=True)
-@commands.has_permissions(administrator=True)
-async def data(ctx, action=None, *command):
-	await ctx.channel.purge(limit=1)
-	try:
-		with psycopg2.connect(DATABASE_URL, sslmode='require') as database:
-			action = action if not action else action.upper()
-			command = command if not command else ' '.join(command)
-			cursor = database.cursor()
-			match action:
-				case 'SELECT':
-					cursor.execute("SELECT {};".format(command))
-					description = [description[0] for description in cursor.description]
-					records = cursor.fetchall()
-					await ctx.send(formater(records, 'キ', description))
-				case 'PRINT':
-					cursor.execute("SELECT month, {} FROM means ORDER BY register DESC LIMIT 12;".format(command))
-					records = cursor.fetchall()
-					names = [column[0] for column in records[::-1]]
-					values = [value[1] for value in records[::-1]]
-					title = f'fix\n🜁\n {command.upper()} CHART\n\n'
-					await ctx.channel.send(describe(values, title, names))
-				case 'HELP':
-					await ctx.channel.send(HELPSQL)
-				case None:
-					cursor.execute("SELECT table_name, column_name FROM information_schema.columns WHERE table_schema = 'public' ORDER BY table_name;")
-					description = [description[0] for description in cursor.description]
-					records = cursor.fetchall()
-					await ctx.channel.send(formater(records, '🜁', description))
-				case _:
-					cursor.execute(f"{action} {command};")
-					await logit('ACTION', client, action=action, command=command)
-					await ctx.channel.send('<a:loading:933335927659561070> ok')
-	except Exception as e:
-		await logit('DAFUCK', client, action=action, command=command, e=e)
-		trace = sys.exc_info(e)[2]
-		raise e.with_traceback(trace)
-
-
-@client.command(aliases = ['pw'], hidden=True)
-@commands.has_permissions(administrator=True)
-async def password(ctx, action=None, *package):
-	await ctx.channel.purge(limit=1)
-	try:
-		with psycopg2.connect(DATABASE_URL, sslmode='require') as database:
-			action = action if not action else action.upper()
-			cursor = database.cursor()
-			match action:
-				case 'SEE':
-					cursor.execute("SELECT signature FROM repository WHERE place = '{}';".format(package[0]))
-					sign = cursor.fetchone()
-					decoded = decoder(sign[0], ctx.guild.name)
-					await ctx.channel.send('`🔏 password:`  ||{}||'.format(decoded))
-					message = ctx.channel.last_message
-					if decoded not in message.content:
-						await ctx.channel.purge(limit=5)
-					else:
-						await message.delete(delay=3.0)
-				case 'ADD':
-					cursor.execute("INSERT INTO repository (place, signature) \
-									VALUES ('{}', '{}');".format(package[0], crypter(package[1], ctx.guild.name)))
-					await ctx.channel.send('<:tea:847101198308999208> ok')
-				case 'UPD':
-					cursor.execute("UPDATE repository SET signature = '{}' \
-									WHERE place = '{}';".format(crypter(package[1], ctx.guild.name), package[0]))
-					await ctx.channel.send('<:worker:791586102825582602> ok')
-				case 'GEN':
-					generated = generator(package[0]) if package else generator(random)
-					await ctx.channel.send('`🔏 generated:` ||{}||'.format(generated))
-				case None:
-					cursor.execute('SELECT place, signature FROM repository;')
-					description = [description[0] for description in cursor.description]
-					records = cursor.fetchall()
-					await ctx.channel.send(formater(records, '⸕', description))
-	except Exception as e:
-		await logit('ERROR_', client, e=e)
 
 
 #░░░░░░░ ░░░░░░  ░░░░░░   ░░░░░░  ░░░░░░

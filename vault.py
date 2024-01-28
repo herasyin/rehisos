@@ -16,8 +16,6 @@ ROLES = {
 
 CODE = '```' # discord formating
 
-CRYPT = '6hZtEeD8krYF)A:Xoai4WjNOS2H^sgCP%5zydRQlf07npxuqVTUJmc91v#K3LG!bw$MBI'
-
 
 #░░░░░░   ░░░░░░   ░░░░░░  ░░   ░░ ░░░░░░░ ░░░░░░  ░░    ░░
 #▒▒   ▒▒ ▒▒    ▒▒ ▒▒    ▒▒ ▒▒  ▒▒  ▒▒      ▒▒   ▒▒  ▒▒  ▒▒
@@ -111,56 +109,6 @@ def describe(value, title='', names=None) -> str:
 		return grafic_
 
 
-def formater(records, icon='', description=None) -> str:
-	linage = [description]
-	for data in records:
-		linage.append(list(data))
-	for i in range(len(linage[0])):
-		size = max((len(str(x[i])) for x in linage)) + 2
-		for i_ in range(len(linage)):
-			linage[i_][i] = str(linage[i_][i]).ljust(size, " ")
-	package = f'  ┌ {"┌ ".join(linage[0])}  \n'
-	for data in linage[1:]:
-		package += f'  ┊ {"┊ ".join([str(x) for x in data])}  \n'
-	package = f'{CODE}fix\n{icon}\n{package}\n🡷{CODE}'
-	return package
-
-
-def decoder(pack_, name) -> str:
-	potion = down(ord('🝄')+ord('✝'))//ord(name[-1])
-	sklep, pack = pack_[:len(CRYPT)], pack_[len(CRYPT):]
-	sklep += pack_[:cack_+1]
-	pack = pack.translate(str.maketrans(sklep, CRYPT))
-	pack = ''.join(chr(ord(pack[x])+ord(potion)-ord(name[1])) for x in range(len(pack)))
-	return pack
-
-def crypter(pack, name) -> str:
-	potion = down(ord('🝄')+ord('✝'))//ord(name[-1])
-	sklep = [x for x in CRYPT]; random.shuffle(sklep); sklep = ''.join(sklep);
-	pack = ''.join(chr(ord(pack[x])-ord(potion)+ord(name[1])) for x in range(len(pack)))
-	pack = pack.translate(str.maketrans(CRYPT, sklep))
-	pack_ = sklep + pack
-	return pack_
-
-def down(ring) -> int:
-	pyramid = [[x+i for x in range(i)] for i in range(1, ring)]
-	def tentaculum(level, index):
-		while level < len(pyramid)-1:
-			return max(
-			pyramid[level][index] + tentaculum(level+1, index),
-			pyramid[level][index] + tentaculum(level+1, index+1)
-			)
-		return pyramid[level][index]
-	return tentaculum(0, 0)
-
-def generator(lenght=8) -> str:
-    builder = lambda lenght: ''.join([random.choice(CRYPT) for x in range(int(lenght))])
-    password = builder(lenght)
-    while not any(x.isnumeric() for x in password) or \
-          not any(x.islower () for x in password) or \
-          not any(x.isupper() for x in password):
-        password = builder(lenght)
-    return password
 
 
 #░░       ░░░░░░   ░░░░░░   ░░░░░░  ░░░░░░░ ░░░░░░
